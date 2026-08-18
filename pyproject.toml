@@ -1,0 +1,63 @@
+[project]
+name = "pymath"
+version = "0.1.0"
+description = "A learning workbench for Year 12 → university maths: CAS, numerics and plotting (a Casio ClassWiz CG-100 you can program)."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "sympy>=1.13",       # symbolic algebra / CAS: the ClassWiz brain
+    "numpy>=2.1",        # fast numeric arrays
+    "scipy>=1.14",       # numeric calculus, optimisation, stats, linear algebra
+    "matplotlib>=3.9",   # static 2D/3D plots
+    "plotly>=5.24",      # interactive plots (hover, zoom, rotate)
+    "pandas>=2.2",       # tabular data for stats work
+    "rich>=13.9",        # pretty terminal output
+    "typer>=0.15",       # the `pymath` CLI
+]
+
+[project.optional-dependencies]
+notebooks = [
+    "jupyterlab>=4.3",
+    "jupytext>=1.16",    # lessons are .py files that open as notebooks
+    "ipywidgets>=8.1",   # sliders for interactive lessons
+]
+
+[project.scripts]
+pymath = "pymath.cli:app"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.8",
+]
+
+[build-system]
+requires = ["uv_build>=0.10,<0.11"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "pymath"
+module-root = "src"
+
+[tool.ruff]
+line-length = 100
+# Lessons are notebooks in disguise: imports appear mid-file next to the cell
+# that needs them, and `from pymath import *` is the point. Don't reorder them.
+extend-exclude = ["lessons"]
+
+[tool.ruff.lint]
+# __all__ is grouped by topic (algebra, calculus, …) so it reads as a contents
+# page; alphabetical order would destroy that.
+ignore = ["RUF022"]
+
+[tool.ruff.lint.per-file-ignores]
+# Calling typer.Argument()/Option() in a default IS the Typer idiom.
+"src/pymath/cli.py" = ["B008"]
+
+[tool.pytest.ini_options]
+# The docstring examples are teaching material, so they're tested too.
+testpaths = ["tests", "src"]
+addopts = "--doctest-modules"
+
+[tool.jupytext]
+formats = "py:percent,ipynb"
