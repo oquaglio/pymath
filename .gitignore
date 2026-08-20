@@ -17,5 +17,6 @@ wheels/
 # Generated output
 plots/
 
-# Notebooks paired to the lessons by jupytext — the .py files are the source
+# Notebooks paired by jupytext — the .py files are the source of truth
 lessons/*.ipynb
+workbook/**/*.ipynb

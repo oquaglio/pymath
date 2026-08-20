@@ -2,7 +2,7 @@
 MPLBACKEND := Agg
 export MPLBACKEND
 
-.PHONY: help setup test lint fix lab notebooks lessons calc clean
+.PHONY: help setup test lint fix lab workbook notebooks lessons calc clean
 
 help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -22,6 +22,9 @@ fix:  ## Fix what can be fixed automatically
 
 lab:  ## Open Jupyter Lab on the lessons (they open as notebooks via jupytext)
 	uv run jupyter lab lessons/
+
+workbook:  ## Open Jupyter Lab on your own workbook
+	uv run jupyter lab workbook/
 
 notebooks:  ## Convert the lessons to .ipynb files (usually unnecessary)
 	uv run jupytext --to notebook lessons/*.py
