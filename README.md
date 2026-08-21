@@ -145,9 +145,17 @@ around it internally so complex roots still appear when you want them.
 
 ## Development
 
+Common tasks run through [just](https://just.systems) (`brew install just`, or
+`uv tool install rust-just`):
+
 ```bash
-uv run pytest              # tests + doctests
-uv run ruff check .        # lint
-uv add <package>           # add a dependency
-make help                  # everything else
+just                       # list every recipe
+just test                  # tests + doctests
+just lint                  # style
+just check                 # lint + tests + every lesson, i.e. what CI runs
+just lessons               # run all 12 lessons end to end
+just solve "x^2 = 9"       # recipes take arguments
+just plot "x^2" "2x+1"
 ```
+
+Or without just: `uv run pytest`, `uv run ruff check .`, `uv add <package>`.

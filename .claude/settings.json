@@ -1,7 +1,19 @@
 {
   "permissions": {
     "allow": [
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(just --version)",
+      "Bash(brew info *)",
+      "Bash(uv tool *)",
+      "Bash(just --list --unsorted)",
+      "Bash(just --evaluate MPLBACKEND)",
+      "Bash(just test *)",
+      "Bash(just lint *)",
+      "Bash(just solve *)",
+      "Bash(just plot *)",
+      "Bash(just lessons *)",
+      "Bash(just --show clean)",
+      "Bash(git rm *)"
     ]
   }
 }

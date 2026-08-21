@@ -7,7 +7,7 @@ maths yourself.
 
 ```bash
 cp workbook/_template.py workbook/calculus/quotient-rule.py
-make workbook          # opens Jupyter Lab here
+just workbook          # opens Jupyter Lab here
 ```
 
 In Jupyter, right-click the `.py` → **Open With → Notebook**. Work in the
