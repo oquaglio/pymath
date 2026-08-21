@@ -21,6 +21,9 @@ notebooks = [
     "jupytext>=1.16",    # lessons are .py files that open as notebooks
     "ipywidgets>=8.1",   # sliders for interactive lessons
 ]
+precision = [
+    "gmpy2>=2.3.1",
+]
 
 [project.scripts]
 pymath = "pymath.cli:app"

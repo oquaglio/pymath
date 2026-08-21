@@ -8,8 +8,8 @@ help:  ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-12s\033[0m %s\n", $$1, $$2}'
 
-setup:  ## Create the venv and install everything (incl. Jupyter)
-	uv sync --extra notebooks
+setup:  ## Create the venv and install everything (Jupyter + gmpy2)
+	uv sync --all-extras
 
 test:  ## Run the test suite and the docstring examples
 	uv run pytest -q

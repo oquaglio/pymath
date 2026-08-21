@@ -25,7 +25,7 @@ PosixPath('plots/analysis_of_x_3_-_3_x.png')
 Needs [uv](https://docs.astral.sh/uv/). Everything else installs itself.
 
 ```bash
-uv sync --extra notebooks    # create .venv and install
+uv sync --all-extras         # create .venv and install (Jupyter + gmpy2)
 uv run pytest                # 163 tests, including every docstring example
 ```
 
@@ -33,7 +33,7 @@ uv run pytest                # 163 tests, including every docstring example
 
 ### 1. The lessons
 
-Eleven lessons in [lessons/](lessons/), each a runnable script **and** a Jupyter
+Twelve lessons in [lessons/](lessons/), each a runnable script **and** a Jupyter
 notebook (they're [jupytext](https://jupytext.readthedocs.io) files, so Jupyter
 opens the `.py` directly — no conversion step, no notebook JSON in git).
 
@@ -55,6 +55,7 @@ uv run python lessons/04_differentiation.py    # or just run it
 | 09 | Sequences and complex numbers | series, convergence, Taylor, De Moivre |
 | 10 | Graphing gallery | every plot type in one place |
 | 11 | Beyond Year 12 | partial derivatives, gradient descent, Newton–Raphson, PCA, Fourier |
+| 12 | High precision | `decimal`, `Fraction`, `mpmath`, `gmpy2` (GMP/MPFR), where floats break |
 
 ### 2. The terminal calculator
 
@@ -132,6 +133,12 @@ expressions the way you'd write them.
 **Degrees are explicit.** Every trig function takes `deg=True/False` rather than
 a hidden mode setting — the most common source of wrong answers on a real
 calculator.
+
+**Precision is a choice.** Floats stop at ~17 digits. Lesson 12 covers the
+ladder above that: `decimal` (C libmpdec, base 10, for money), `Fraction`
+(exact, never rounds), `mpmath` (arbitrary-precision maths), and `gmpy2`
+(bindings to GMP/MPFR — installed via `--extra precision`, and mpmath picks it
+up automatically as a speedup).
 
 **Symbols are real by default**, which lets SymPy simplify harder. `solve` works
 around it internally so complex roots still appear when you want them.
