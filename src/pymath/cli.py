@@ -183,6 +183,55 @@ def base(value: str, frm: int = typer.Option(10, "--from"), to: int = typer.Opti
 
 
 @app.command()
+def rpn(
+    expression: list[str] = typer.Argument(None, help='e.g. "3 4 + 2 *"'),
+    convert: str = typer.Option(None, "--from-infix", help="convert infix to RPN instead"),
+):
+    """Evaluate Reverse Polish Notation, or convert infix into it.
+
+    With no expression, starts an interactive stack calculator.
+    """
+    from . import rpn as rpn_mod
+
+    # A malformed expression is user error, not a crash — report it as one line
+    # rather than a traceback.
+    try:
+        if convert:
+            converted = rpn_mod.to_rpn(convert)
+            console.print(f"[dim]{convert}[/dim]  →  [bold]{converted}[/bold]")
+            show(rpn_mod.evaluate(converted), label="value")
+            return
+        if expression:
+            show(rpn_mod.evaluate(" ".join(expression)), label="result")
+            return
+    except rpn_mod.RPNError as err:
+        console.print(f"[red]error:[/red] {err}")
+        raise typer.Exit(1) from None
+
+    calc = rpn_mod.Calculator()
+    console.print(
+        "[bold]RPN calculator[/bold] — operands first, then the operator: [dim]3 4 +[/dim]\n"
+        "  operators  + - * / ^   functions  sqrt sin cos ln exp abs inv fact\n"
+        "  stack      dup drop swap over roll clear sum prod\n"
+        "  constants  pi e i      symbols  x y z ...\n"
+        "  Ctrl-D or 'quit' to exit."
+    )
+    while True:
+        try:
+            line = typer.prompt("", prompt_suffix="> ")
+        except (EOFError, typer.Abort):
+            break
+        if line.strip() in ("quit", "exit"):
+            break
+        try:
+            calc.push(line)
+        except rpn_mod.RPNError as err:
+            console.print(f"[red]{err}[/red]")
+            continue
+        console.print(f"[dim]{calc.display()}[/dim]")
+
+
+@app.command()
 def repl():
     """Start an interactive session with everything already imported."""
     import code

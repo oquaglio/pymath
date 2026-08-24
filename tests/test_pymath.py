@@ -13,6 +13,7 @@ from pymath import (
     geometry,
     linalg,
     numbertheory,
+    rpn,
     sequences,
     stats,
     trig,
@@ -402,3 +403,95 @@ def test_surd_rationalises_denominator():
 
 def test_continued_fraction_of_pi():
     assert numbertheory.continued_fraction(sp.pi, 4) == [3, 7, 15, 1]
+
+
+# --- RPN ---------------------------------------------------------------------
+
+def test_rpn_basic_evaluation():
+    assert rpn.evaluate("3 4 + 2 *") == 14
+    assert rpn.evaluate("5 1 2 + 4 * + 3 -") == 14
+    assert rpn.evaluate("2 10 ^") == 1024
+
+
+def test_rpn_operand_order_is_not_symmetric():
+    assert rpn.evaluate("5 3 -") == 2  # 5 - 3, not 3 - 5
+    assert rpn.evaluate("6 2 /") == 3
+
+
+def test_rpn_keeps_values_exact():
+    assert rpn.evaluate("2 sqrt") == sp.sqrt(2)
+    assert rpn.evaluate("1 2 / 1 3 / +") == sp.Rational(5, 6)
+    assert rpn.evaluate("pi 6 / sin") == sp.Rational(1, 2)
+
+
+def test_rpn_handles_symbols():
+    assert rpn.evaluate("x 2 ^ x 3 * + expand") == x**2 + 3 * x
+
+
+def test_rpn_stack_operations():
+    assert rpn.Calculator().push("3 dup *").x == 9
+    assert rpn.Calculator().push("1 2 swap -").x == 1  # 2 - 1
+    assert rpn.Calculator().push("1 2 3 sum").x == 6
+    assert rpn.Calculator().push("2 3 4 prod").x == 24
+    assert rpn.Calculator().push("1 2 drop").x == 1
+
+
+def test_rpn_empty_stack_is_an_error():
+    with pytest.raises(rpn.RPNError, match="empty"):
+        rpn.evaluate("3 +")
+
+
+def test_rpn_leftover_operands_is_an_error():
+    with pytest.raises(rpn.RPNError, match="expected one value"):
+        rpn.evaluate("1 2 3 +")
+
+
+def test_shunting_yard_respects_precedence():
+    assert rpn.to_rpn("3 + 4 * 2") == "3 4 2 * +"
+    assert rpn.to_rpn("(3 + 4) * 2") == "3 4 + 2 *"
+
+
+def test_shunting_yard_power_is_right_associative():
+    # 2^(3^2) = 512, not (2^3)^2 = 64
+    assert rpn.evaluate(rpn.to_rpn("2 ^ 3 ^ 2")) == 512
+
+
+def test_shunting_yard_unary_minus_binds_tighter_than_binary():
+    assert rpn.evaluate(rpn.to_rpn("-3 + 4")) == 1  # (-3) + 4, not -(3 + 4)
+    assert rpn.evaluate(rpn.to_rpn("2 ^ -3")) == sp.Rational(1, 8)
+
+
+def test_shunting_yard_subtraction_is_left_associative():
+    assert rpn.evaluate(rpn.to_rpn("10 - 2 - 3")) == 5
+    assert rpn.evaluate(rpn.to_rpn("10 - (2 - 3)")) == 11
+
+
+@pytest.mark.parametrize("infix", [
+    "(3 + 4) * 2", "3 + 4 * 2", "2 ^ 3 ^ 2", "(1 + 2) * (3 - 4)",
+    "sqrt(16) + 1", "-3 + 4", "-3 * 4", "2 ^ -3", "10 - 2 - 3",
+    "10 - (2 - 3)", "2 * (3 + 4) / 7", "-(2 + 3) * 4",
+])
+def test_rpn_round_trip_matches_sympy(infix):
+    """infix → RPN → value must equal what SymPy makes of the original."""
+    value = rpn.evaluate(rpn.to_rpn(infix))
+    assert sp.simplify(value - sp.sympify(infix.replace("^", "**"))) == 0
+
+
+@pytest.mark.parametrize("infix", [
+    "(3 + 4) * 2", "3 + 4 * 2", "(1 + 2) * (3 - 4)", "10 - (2 - 3)", "2 * (3 + 4) / 7",
+])
+def test_infix_rebuilt_from_rpn_is_equivalent(infix):
+    rebuilt = rpn.to_infix(rpn.to_rpn(infix))
+    assert sp.sympify(rebuilt.replace("^", "**")) == sp.sympify(infix.replace("^", "**"))
+
+
+def test_unbalanced_parentheses_rejected():
+    with pytest.raises(rpn.RPNError, match="unbalanced"):
+        rpn.to_rpn("(3 + 4")
+
+
+def test_cpython_bytecode_is_rpn():
+    """(a + b) * c compiles to LOAD a, LOAD b, +, LOAD c, * — the RPN order."""
+    listing = rpn.bytecode("(a + b) * c")
+    positions = [listing.index(s) for s in ("(a)", "(b)", "(+)", "(c)", "(*)")]
+    assert positions == sorted(positions)

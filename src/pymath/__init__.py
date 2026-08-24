@@ -21,6 +21,7 @@ Modules, if you'd rather be explicit:
   sequences     sequences, series, complex numbers
   numbertheory  primes, factors, fractions, bases, modular arithmetic
   plotting      every kind of graph, saved as PNG or interactive HTML
+  rpn           Reverse Polish Notation stack calculator over exact values
   theme         the shared chart palette
 
 Two names are deliberately different at the top level, because the modules use
@@ -37,6 +38,7 @@ from . import (
     linalg,
     numbertheory,
     plotting,
+    rpn,
     sequences,
     stats,
     theme,
@@ -125,6 +127,7 @@ from .plotting import (
     plot_tangent,
     scatter,
 )
+from .rpn import Calculator, to_infix, to_rpn
 from .sequences import arithmetic, complex_form, converges, from_terms, geometric
 from .stats import (
     binomial,
@@ -179,7 +182,7 @@ __version__ = "0.1.0"
 __all__ = [
     # modules
     "algebra", "calculus", "geometry", "linalg", "numbertheory", "plotting",
-    "sequences", "stats", "theme", "trig",
+    "rpn", "sequences", "stats", "theme", "trig",
     # symbols & parsing
     "x", "y", "z", "t", "a", "b", "c", "k", "m", "n", "r", "s", "theta",
     "pi", "E", "I", "oo",
@@ -211,6 +214,8 @@ __all__ = [
     "plot", "plot_analysis", "plot_integral", "plot_tangent", "plot_parametric",
     "plot_polar", "plot_implicit", "plot_surface", "plot_contour", "plot_slope_field",
     "histogram", "boxplot", "scatter", "plot_normal", "interactive", "interactive_surface",
+    # rpn
+    "Calculator", "to_rpn", "to_infix",
     # display
     "show", "table",
 ]

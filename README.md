@@ -33,7 +33,7 @@ uv run pytest                # 163 tests, including every docstring example
 
 ### 1. The lessons
 
-Twelve lessons in [lessons/](lessons/), each a runnable script **and** a Jupyter
+Thirteen lessons in [lessons/](lessons/), each a runnable script **and** a Jupyter
 notebook (they're [jupytext](https://jupytext.readthedocs.io) files, so Jupyter
 opens the `.py` directly — no conversion step, no notebook JSON in git).
 
@@ -56,6 +56,7 @@ uv run python lessons/04_differentiation.py    # or just run it
 | 10 | Graphing gallery | every plot type in one place |
 | 11 | Beyond Year 12 | partial derivatives, gradient descent, Newton–Raphson, PCA, Fourier |
 | 12 | High precision | `decimal`, `Fraction`, `mpmath`, `gmpy2` (GMP/MPFR), where floats break |
+| 13 | RPN and stack machines | Reverse Polish, shunting-yard, and why CPython bytecode is RPN |
 
 ### 2. The terminal calculator
 
@@ -69,6 +70,9 @@ uv run pymath plot "sin(x)" --html             # interactive, opens in a browser
 uv run pymath triangle --a 3 --b 4 --C 90
 uv run pymath trigsolve "sin(x) = 1/2" --from 0 --to 360
 uv run pymath statistics 2 4 4 4 5 5 7 9
+uv run pymath rpn                              # RPN stack calculator (HP style)
+uv run pymath rpn "3 4 + 2 *"                  # or one-shot
+uv run pymath rpn --from-infix "(3+4)*2"       # shunting-yard conversion
 uv run pymath repl                             # everything pre-imported
 ```
 
@@ -91,6 +95,7 @@ from pymath import calculus, plotting     # or: from pymath import *
 | `sequences` | sequences, series, complex numbers |
 | `numbertheory` | primes, factors, fractions, bases, modular arithmetic |
 | `plotting` | every kind of graph |
+| `rpn` | Reverse Polish stack calculator over exact values |
 | `theme` | the shared chart palette |
 
 ## Graphing
@@ -153,7 +158,7 @@ just                       # list every recipe
 just test                  # tests + doctests
 just lint                  # style
 just check                 # lint + tests + every lesson, i.e. what CI runs
-just lessons               # run all 12 lessons end to end
+just lessons               # run all 13 lessons end to end
 just solve "x^2 = 9"       # recipes take arguments
 just plot "x^2" "2x+1"
 ```
