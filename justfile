@@ -1,3 +1,8 @@
+# Pass recipe arguments through as real positional args ($@) rather than
+# splicing them into the command line — otherwise a token like `*` in
+# `just rpn "3 4 + 2 *"` gets glob-expanded into filenames by the shell.
+set positional-arguments
+
 # Plots are written to files rather than shown, so nothing needs a display.
 export MPLBACKEND := "Agg"
 
@@ -45,17 +50,21 @@ lessons:
 calc:
     uv run pymath repl
 
+# RPN stack calculator: just rpn, or just rpn "3 4 + 2 *"
+rpn *TOKENS:
+    uv run pymath rpn "$@"
+
 # Solve an equation: just solve "x^2 - 5x + 6 = 0"
 solve EQUATION:
-    uv run pymath solve "{{ EQUATION }}"
+    uv run pymath solve "$1"
 
 # Graph functions: just plot "x^2" "2x+1"
 plot +EXPRESSIONS:
-    uv run pymath plot {{ EXPRESSIONS }}
+    uv run pymath plot "$@"
 
 # Full curve analysis with a graph: just analyse "x^3 - 3x"
 analyse EXPRESSION:
-    uv run pymath analyse "{{ EXPRESSION }}"
+    uv run pymath analyse "$1"
 
 # Everything CI would run
 check: lint test lessons
