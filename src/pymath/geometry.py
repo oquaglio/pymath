@@ -46,8 +46,13 @@ def gradient(p1, p2):
 def line(p1, p2=None, slope=None) -> dict:
     """Equation of a line from two points, or a point and a gradient.
 
+    ``x_intercept`` is a single value for a sloped line, ``Reals`` for the
+    x-axis (every x) and ``EmptySet`` for any other horizontal line.
+
     >>> line((0, 1), slope=2)["y="]
     2*x + 1
+    >>> line((0, 3), slope=0)["x_intercept"]
+    EmptySet
     """
     if p2 is not None:
         m = gradient(p1, p2)
@@ -59,12 +64,17 @@ def line(p1, p2=None, slope=None) -> dict:
     if m is sp.oo:
         return {"y=": None, "general": sp.Eq(x, x0), "gradient": sp.oo, "vertical": True}
     expr = sp.simplify(m * (x - x0) + y0)
+    if m == 0:
+        # Horizontal: either the x-axis itself (every x) or nowhere.
+        x_intercept = sp.S.Reals if y0 == 0 else sp.EmptySet
+    else:
+        x_intercept = sp.solve(sp.Eq(expr, 0), x)[0]
     return {
         "y=": expr,
         "general": sp.Eq(sp.simplify(sp.together(y - expr)), 0),
         "gradient": m,
         "y_intercept": expr.subs(x, 0),
-        "x_intercept": sp.solve(sp.Eq(expr, 0), x)[0] if m != 0 else None,
+        "x_intercept": x_intercept,
         "vertical": False,
     }
 

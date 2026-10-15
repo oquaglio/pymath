@@ -215,6 +215,11 @@ def test_line_from_two_points():
     assert ln["y="] == 2 * x + 1
 
 
+def test_horizontal_line_x_intercepts():
+    assert geometry.line((0, 3), slope=0)["x_intercept"] is sp.EmptySet
+    assert geometry.line((0, 0), slope=0)["x_intercept"] is sp.S.Reals
+
+
 def test_perpendicular_gradients_multiply_to_minus_one():
     perp = geometry.perpendicular_through((0, 0), 2)
     assert sp.diff(perp, x) * 2 == -1

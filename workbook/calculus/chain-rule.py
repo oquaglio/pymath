@@ -106,4 +106,79 @@ print("match: ", simplify(mine - theirs) == 0)
 corrected = sym("6x*exp(3x^2)")
 print("match:", simplify(corrected - theirs) == 0)
 
+# %% [markdown]
+# ## Pending Chain Rule Problems
+#
+# Here are ten, roughly in order of difficulty. Differentiate each with respect to x:
+#
+# 1. $y = (3x + 2)^5$
+# 1. $y = (x^2 - 4)^3$
+# 1. $y = \sqrt{5x + 1}$
+# 1. $y = \sin(4x)$
+# 1. $y = e^{x^2}$
+# 1. $y = \ln(2x^3 + 7)$
+# 1. $y = \cos^3(x)$
+# 1. $y = \dfrac{1}{(x^2 + 1)^2}$
+# 1. $y = e^{\sin x}$
+# 1. $y = \sin\!\left(\sqrt{x^2 + 1}\right)$ (a double chain)
+
+# %% [markdown]
+# ## 1. Diff y = (3x + 2)^5
+#
+# The **chain rule** is what you use when you differentiate a function **inside another function**.
+#
+# Suppose you have:
+#
+# $$
+# y = (3x + 2)^5
+# $$
+#
+# There are really **two functions** here:
+#
+# - **Inside:** $u = 3x + 2$
+# - **Outside:** $y = u^5$
+#
+# The chain rule says:
+#
+# $$
+# \boxed{\frac{dy}{dx} = \frac{dy}{du}\frac{du}{dx}}
+# $$
+#
+# Differentiate each layer:
+#
+# $$
+# \frac{dy}{du} = 5u^4
+# $$
+#
+# and
+#
+# $$
+# \frac{du}{dx} = 3
+# $$
+#
+# Multiply:
+#
+# $$
+# \frac{dy}{dx} = 5u^4(3)
+# $$
+#
+# Substitute $u = 3x + 2$:
+#
+# $$
+# \boxed{\frac{dy}{dx} = 15(3x + 2)^4}
+# $$
+#
+# ---
+
+# %%
+mine = sym("15(3x+2)^4")
+
+# %%
+theirs = diff("(3x+2)^5")
+
+# %%
+print("theirs:", theirs)
+print("mine:  ", mine)
+print("match: ", simplify(mine - theirs) == 0)
+
 # %%

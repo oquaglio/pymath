@@ -8,23 +8,23 @@ from pymath import *  # noqa: F403
 # ## Points and lines
 
 # %%
-A, B = (1, 2), (5, 10)
+A, B = (1, 3), (5, 11)
 print("distance:", distance(A, B))
 print("midpoint:", midpoint(A, B))
 print("gradient:", gradient(A, B))
 
 # %%
-show(line(A, B), label="line through (1,2) and (5,10)")
+show(line(A, B), label="line through (1,3) and (5,11)")
 
 # %% [markdown]
 # Parallel lines share a gradient; perpendicular gradients multiply to −1.
 
 # %%
-print(perpendicular := geometry.perpendicular_through((1, 2), 2))
+print(perpendicular := geometry.perpendicular_through((1, 3), 2))
 print("check:", diff(perpendicular) * 2)
 
 # %%
-plot("2*x + 1", "-x/2 + 5/2", labels=["y = 2x + 1", "perpendicular"],
+plot("2*x + 1", "-x/2 + 7/2", labels=["y = 2x + 1", "perpendicular"],
      domain=(-3, 5), title="Perpendicular gradients multiply to -1")
 
 # %% [markdown]
